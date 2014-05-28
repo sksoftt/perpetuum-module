@@ -1,1 +1,0 @@
-This lesson about hooks.

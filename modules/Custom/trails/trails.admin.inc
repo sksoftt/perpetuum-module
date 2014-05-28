@@ -1,17 +1,15 @@
 <?php
-
-function trails_make_admin_menu_form()
+function trails_admin_menu()
 {
     $form = array();
     $form["trails_admin_menu"] = array
     (
         "#type" => "select",
         "#title" => "Enter the max number of the history rows",
-        "#options" => drupal_map_assoc(array(range(1, 5))),
+        "#options" => drupal_map_assoc(array(1, 2, 3, 4, 5)),
         "#default_value" => variable_get("trails_admin_menu", ""),
         "#requiried" => true
     );
     
     return system_settings_form($form);
 }
-?>

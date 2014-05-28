@@ -1,11 +1,4 @@
 <?php
-
-/* 
- * 
- * This file with many hook - to understand how it works
- * 
- */
-
 // implements hook_init().
 function trails_init()
 {
@@ -54,33 +47,29 @@ function trails_permission()
 
 function trails_menu()
 {
-    
-    $items["admin/config/trails"] = array
+    $items["admin/config/trails"] = array    
     (
-        "title" => "Trails  menu",
-        "description" => "Trails module menu ",
-        "page callback" => "drupal_get_form",
-        "page arguments" => "trails_make_admin_menu_form",
+        "title" => "Slava trails module", //regular title for the page
+        
+        //description of the page
+        "description" => "Slava - trails configuration page",
+        
+        // main function of the page
+        "page callback" => "drupal_get_form",//drupal API func
+        //
+        //access permission (admin only)
         "access arguments" => array("administer trails"),
+        
+        //scaffolding_admin_settings is the function that will return arguments
+        //for drupal_get_form function
+        "page arguments" => array("trails_admin_menu"),
+        
+        //path to scaffolding_admin_settings function
         "file" => "trails.admin.inc",
+        
+        //path to scaffolding.admin.inc
         "file path" => drupal_get_path("module", "trails")
     );
+    
     return $items;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
