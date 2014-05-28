@@ -49,25 +49,13 @@ function trails_menu()
 {
     $items["admin/config/trails"] = array    
     (
-        "title" => "Slava trails module", //regular title for the page
         
-        //description of the page
-        "description" => "Slava - trails configuration page",
-        
-        // main function of the page
-        "page callback" => "drupal_get_form",//drupal API func
-        //
-        //access permission (admin only)
+        "title" => "Trails administer",
+        "description" => "Trails module administer",
         "access arguments" => array("administer trails"),
-        
-        //scaffolding_admin_settings is the function that will return arguments
-        //for drupal_get_form function
+        "page callback" => "drupal_get_form",
         "page arguments" => array("trails_admin_menu"),
-        
-        //path to scaffolding_admin_settings function
         "file" => "trails.admin.inc",
-        
-        //path to scaffolding.admin.inc
         "file path" => drupal_get_path("module", "trails")
     );
     

@@ -1,6 +1,6 @@
 name = "Trails"
 description = "This is the trails module - about the hooks"
-package = Slava module
+package = Slava modules
 core = 7.x
 files[] = trails.module
 files[] = trails.admin.inc
