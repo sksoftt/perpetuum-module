@@ -1,0 +1,86 @@
+<?php
+
+/* 
+ * 
+ * This file with many hook - to understand how it works
+ * 
+ */
+
+// implements hook_init().
+function trails_init()
+{
+        //tacking what we have in trail_history variable
+        // if the variable doesn't exists
+        //function will return an empty array 
+    
+    $trails_history = "trails_history";
+    $trail = variable_get($trails_history, array());
+    
+    $num = count($trail);
+    
+    if (count($trail) >= 2)
+    {
+        array_shift($trail);
+    }
+    
+    $trail[] = array
+    (
+        "title" => strip_tags(drupal_get_title()), //delete all HTML tags if exists
+        "path" => $_GET["q"], //taking the path from q var
+        "time" => REQUEST_TIME
+    );
+    variable_set($trails_history, $trail); //setting new variable
+     
+    return;
+}
+
+function trails_permission()
+{
+    return array
+    (
+        "administer trails" => array
+        (
+            "title" => t("Administer trails module"),
+            "description" => t("Add one more permission")
+        ),
+        
+        "access trails" => array
+        (
+            "title" => t("Access trails blocks"),
+            "description" => t("View block generaget by the Trails module")
+        )
+    );
+}
+
+function trails_menu()
+{
+    
+    $items["admin/config/trails"] = array
+    (
+        "title" => "Trails  menu",
+        "description" => "Trails module menu ",
+        "page callback" => "drupal_get_form",
+        "page arguments" => "trails_make_admin_menu_form",
+        "access arguments" => array("administer trails"),
+        "file" => "trails.admin.inc",
+        "file path" => drupal_get_path("module", "trails")
+    );
+    return $items;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

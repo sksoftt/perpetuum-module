@@ -1,0 +1,23 @@
+<?php
+
+function mymodule_menu()
+{
+    $items["my_module"] = array
+    (
+        "page callback" => "mymodule_firstpage", 
+        "access arguments" => array("access content"),
+        "type" => MENU_CALLBACK
+     );
+    
+    
+    return $items;
+}
+
+function mymodule_firstpage()
+{
+    $str = "<strong>Created by Softtailors and Slava Software Solutions </strong><br>";
+    $str .= "Hello World!";
+    return $str;
+}
+
+?>

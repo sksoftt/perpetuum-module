@@ -1,0 +1,5 @@
+name = "04 Trails"
+description = "This module about the hooks"
+package = Slava modules
+core = 7.x
+files[] = trails.module

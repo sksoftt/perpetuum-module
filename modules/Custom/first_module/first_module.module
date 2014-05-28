@@ -1,0 +1,51 @@
+<?php
+
+function first_module_menu()
+{
+    $item["first_module"] = array
+    (
+        "page callback" => "fun",
+        "access argument" => array("access content"),
+        "access arguments" => array("access content"),
+        "type" => MENU_CALLBACK
+        
+    );
+    
+    return $item;
+}
+
+function fun()
+{
+    $str = "Ths is my first  module created by myself";
+    return $str;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>

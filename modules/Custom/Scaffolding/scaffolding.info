@@ -1,0 +1,21 @@
+;$Id: scaffolding menu info 18/05/2014$
+
+;name of the module appears in administration-modules page
+name = 02 Scaffolding
+
+description = Second module with basic explanation about module file structure
+package = Slava modules
+core = 7.x
+
+;minimal php version
+php = 5.1
+
+;the path to configure page
+;configure = slava_module_scaffolding_configuration
+
+files[] = scaffolding.module
+files[] = scaffolding.admin.inc
+
+;what other modules have to be installed before this module
+; we have only one for example this time
+dependencies[] = block

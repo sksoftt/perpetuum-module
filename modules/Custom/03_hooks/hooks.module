@@ -1,0 +1,52 @@
+<?php
+
+// menu hook
+function hooks_menu()
+{
+    $item[""] = array
+    (
+        "title" => "Hooks module",
+        "description" => "Lesson 03 about hooks",
+        //"page callback" =>
+    );
+    
+    return $item;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>

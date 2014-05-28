@@ -1,0 +1,5 @@
+name = First module
+description = Thirst module created by myself Path - ?q=first_module
+package = Slava modules
+core = 7.x
+files[] = first_module.module

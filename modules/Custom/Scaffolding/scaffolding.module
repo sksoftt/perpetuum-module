@@ -1,0 +1,81 @@
+<?php
+
+function scaffolding_menu()
+{
+    // this page for module settings
+    $items["admin/settings/scaffolding"] = array    
+    (
+        "title" => "Slava Scaffolding module", //regular title for the page
+        
+        //description of the page
+        "description" => "Slava - Scaffolding configuration page",
+        
+        // main function of the page
+        "page callback" => "drupal_get_form",//drupal API func
+        //
+        //access permission (admin only)
+        "access arguments" => array("access administration pages"),
+        
+        //scaffolding_admin_settings is the function that will return arguments
+        //for drupal_get_form function
+        "page arguments" => array("scaffolding_admin_settings"),
+        
+        //path to scaffolding_admin_settings function
+        "file" => "scaffolding.admin.inc",
+        
+        //path to scaffolding.admin.inc
+        "file path" => drupal_get_path("module", "scaffoldng")
+    );
+    
+    return $items;
+}
+
+
+function scaffolding_help($path, $org)
+{
+    switch ($path)
+    {
+        
+        case "admin/settings/scaffolding":
+            return t("Help for admin/settings/scaffolding");
+            
+        //path to the drupal help
+        case "admin/help#scaffolding":
+           return t("Help for admin/help#scaffolding");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>

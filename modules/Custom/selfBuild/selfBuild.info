@@ -1,0 +1,5 @@
+name = Self build module
+description = "I try to build the module myself"
+package = Slava modules
+core = 7.x
+files[] = selfBuild.module

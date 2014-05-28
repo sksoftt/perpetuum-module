@@ -1,0 +1,22 @@
+<?php
+
+//menu_hook
+function selfBuild_menu()
+{
+    $item = array();
+    $item[""] = array
+    (
+        "title" => "Self builded module",
+        "page callback" => "printHello",
+        "access arguments" => array("access content"),
+        "type" => MENU_CALLBACK
+    );
+ 
+    return $item;
+}
+
+function printHello()
+{
+    $str = "Hello! This is homepage";
+    return $str;
+}
