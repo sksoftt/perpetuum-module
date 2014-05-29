@@ -9,12 +9,10 @@ function trails_init()
     $trails_history = "trails_history";
     $trail = variable_get($trails_history, array());
     
-    $num = count($trail);
+    $num = variable_get("trails_admin_menu", 5);
+    $cnt = count($trail);
     
-    if (count($trail) >= 2)
-    {
-        array_shift($trail);
-    }
+    for (; count($trail) >= $num; array_shift($trail));
     
     $trail[] = array
     (
@@ -29,6 +27,9 @@ function trails_init()
 
 function trails_permission()
 {
+    // this hook returns permissions names
+    // after that we be able to check them in
+    // "access arguments" => array() for somwe page.
     return array
     (
         "administer trails" => array
@@ -58,6 +59,49 @@ function trails_menu()
         "file" => "trails.admin.inc",
         "file path" => drupal_get_path("module", "trails")
     );
-    
     return $items;
 }
+
+
+function  trails_cron()
+{
+    // this function will run with the cron (manualy or automaticaly)
+    // it can do any actions for this (maybe not only) module
+}
+
+// Block hooks
+function trails_block_info()
+{
+    $block = array();
+    $block["Trails history"] = array
+    (
+        "info" => t("History of trails"),
+        "cache" => DRUPAL_NO_CACHE
+    );
+    
+    return $block;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

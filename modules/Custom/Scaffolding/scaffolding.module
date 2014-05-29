@@ -31,11 +31,12 @@ function scaffolding_menu()
 }
 
 
+// $path receiving the path of the page that request help for the module
 function scaffolding_help($path, $org)
 {
     switch ($path)
     {
-        
+        // help will appear only on the settings page of scalfolding module
         case "admin/settings/scaffolding":
             return t("Help for admin/settings/scaffolding");
             
