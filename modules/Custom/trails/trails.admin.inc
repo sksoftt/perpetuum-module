@@ -11,7 +11,7 @@ function trails_admin_menu()
         // because of system_settigs_form() function every element of the form
         // becaome a variable. So if some value already exists
         //it become a defualt value
-        "#default_value" => variable_get("trails_admin_menu", ""),
+        "#default_value" => variable_get("trails_admin_menu", 5),
         "#requiried" => true
     );
     

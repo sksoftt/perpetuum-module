@@ -73,13 +73,49 @@ function  trails_cron()
 function trails_block_info()
 {
     $block = array();
+    
+    //the index of array is the name of block
     $block["Trails history"] = array
     (
+        //info - is single request parametr
         "info" => t("History of trails"),
         "cache" => DRUPAL_NO_CACHE
-    );
-    
+    );   
     return $block;
+}
+
+function trails_block_configure($delta = "")
+{
+    $form = array();
+    
+    //$delta id a name of some block. That means - we can create different 
+    //menu forms for different blocks
+    if ($delta == "Trails history")
+    {
+        // max number or trails from form in menu hook
+        $max_trails = variable_get("trails_admin_menu", 5);
+        $form["trails_block_num"] = array
+        (
+            "#type" => "select",
+            "#title" => t("Number of trails to show"),
+            "#default_value" => variable_get("trails_block_num", $max_trails),
+
+            "#options" => drupal_map_assoc(range(1, $max_trails))
+        );
+    }
+    return $form;
+}
+
+function trails_block_save($delta = "", $edit = array())
+{
+    /* $delta contains the name of the block
+     * $edit array contains values of form element
+     */
+    if ($delta == "Trails history")
+    {
+        variable_set("trails_block_num", $edit["trails_block_num"]);
+    }
+    return;
 }
 
 
