@@ -32,13 +32,13 @@ function trails_permission()
     // "access arguments" => array() for somwe page.
     return array
     (
-        "administer trails" => array
+        "trails administer" => array
         (
             "title" => t("Administer trails module"),
             "description" => t("Add one more permission")
         ),
         
-        "access trails" => array
+        "trails view" => array
         (
             "title" => t("Access trails blocks"),
             "description" => t("View block generaget by the Trails module")
@@ -53,7 +53,7 @@ function trails_menu()
         
         "title" => "Trails administer",
         "description" => "Trails module administer",
-        "access arguments" => array("administer trails"),
+        "access arguments" => array("trails administer"),
         "page callback" => "drupal_get_form",
         "page arguments" => array("trails_admin_menu"),
         "file" => "trails.admin.inc",
@@ -94,10 +94,12 @@ function trails_block_configure($delta = "")
     {
         // max number or trails from form in menu hook
         $max_trails = variable_get("trails_admin_menu", 5);
+        
         $form["trails_block_num"] = array
         (
             "#type" => "select",
             "#title" => t("Number of trails to show"),
+            "#options" => array(range(1, $max_trails, 1)),
             "#default_value" => variable_get("trails_block_num", $max_trails),
 
             "#options" => drupal_map_assoc(range(1, $max_trails))
@@ -116,6 +118,14 @@ function trails_block_save($delta = "", $edit = array())
         variable_set("trails_block_num", $edit["trails_block_num"]);
     }
     return;
+}
+
+function trails_block_view($delta = "")
+{
+    if (user_access("trails_view") && $delta == "Trails history")
+    {
+        
+    }
 }
 
 
