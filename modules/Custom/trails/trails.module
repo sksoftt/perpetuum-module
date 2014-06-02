@@ -48,6 +48,7 @@ function trails_permission()
 
 function trails_menu()
 {
+    
     $items["admin/config/trails"] = array    
     (
         
@@ -87,6 +88,11 @@ function trails_block_info()
 function trails_block_configure($delta = "")
 {
     $form = array();
+    $res = user_access("d");
+    if (!user_access("a"))
+    {
+        return;
+    }
     
     //$delta id a name of some block. That means - we can create different 
     //menu forms for different blocks
@@ -122,10 +128,47 @@ function trails_block_save($delta = "", $edit = array())
 
 function trails_block_view($delta = "")
 {
-    if (user_access("trails_view") && $delta == "Trails history")
+
+    if (!user_access("trails_view") || $delta != "Trails history")
     {
-        
+        return;
     }
+ 
+        //receiving trails history array 
+    $trails_history = variable_get("trails_history", false);
+    $module_array_length = variable_get("trails_admin_menu");
+    if (!$trails_history)
+    {
+        return;
+    }
+    
+    $trails_history = array_reverse($trails_history);
+    $block_count = variable_get("trails_block_num", $module_array_length);
+    $output = "";
+    for($cnt = 0; $cnt != $block_count; ++$cnt)
+    {
+        if (!isset($trails_history[$cnt]))
+        {
+            continue;
+        }
+        
+        $item = $trails_history[$cnt];
+        $output .= "<li>" . l($item["title"], $item["path"])." " . format_interval(REQUEST_TIME - $item["time"]) . " ".t("ago") . "</li>";
+    }
+        
+        if ($output != "")
+        {
+            $output .= t("This is the last !num pages you've visited", array("!num", $block_count));
+            $output = "<ul>".$output."/ul";
+        }
+        
+        $block["subject"] = "Trails history";
+        $block["content"] = $output;
+        return $block;
+    
+    
+    
+    
 }
 
 
