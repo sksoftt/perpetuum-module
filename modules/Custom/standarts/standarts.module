@@ -1,0 +1,42 @@
+<?php
+
+function standarts_menu() 
+{
+    $item["standarts"] = array
+    (
+        "title" => "Codings standarst",
+        "description" => "This module with examples of coding standarts",
+        "page callback" => "",
+        "page arguments" => array("access content")
+    );
+    return $item;
+}
+
+function standarts_menu_callback()
+{
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+name "Coding standarts"
+description = "This module with examples of coding standarst"
+package = "Slava modules"
+core = 7.x
+files[] = standarts.module

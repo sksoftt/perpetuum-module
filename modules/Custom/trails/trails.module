@@ -153,12 +153,13 @@ function trails_block_view($delta = "")
         }
         
         $item = $trails_history[$cnt];
-        $output .= "<li>" . l($item["title"], $item["path"])." " . format_interval(REQUEST_TIME - $item["time"]) . " ".t("ago") . "</li>";
+        $output .= "<li>" . l($item["title"], $item["path"]).
+                " " . format_interval(REQUEST_TIME - $item["time"]) . " ".t("ago") . "</li>";
     }
         
         if ($output != "")
         {
-            $output .= t("This is the last !num pages you've visited", array("!num", $block_count));
+            $output = t("The last %d pages you've visited", array("%d" => $block_count))."<br>" . $output;
             $output = "<ul>".$output."/ul";
         }
         
