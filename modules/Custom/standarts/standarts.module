@@ -14,8 +14,94 @@ function standarts_menu()
 
 function standarts_menu_callback()
 {
+    $test="Slava"; //wrong
+    $test = "Slava"; //right
+    $num ++; // wirong
+    $num++; //right
     
+    if($num == 42) //wrong have to be space between if and extension
+    {
+        exit;
+    } else { //wrong else have to be on a new lina
+        return false; //it's better to write FALSE, TRUE, NULL in uppercase
+    }
+    
+    // right example
+    if ($num == 42)
+    {
+        exit;
+    }
+    else
+    {
+        $num = 42;
+    }
+    
+    $test=variable_get($name); // wrong. have to be spase between variable, 'equal' and function
+    $test = variable_get($name); // right example
 }
+
+    /*
+     * The good style is to return some value from function
+     */
+
+function fun($var = NULL, $val2) // wrong. default vars going after required.
+{
+    return false;
+}
+
+function  fun1 ($var2, $var = NULL)
+{
+    return false;
+}
+
+$test = array("one", "two", "obj" => "three"); //for sort arrays
+
+//right way to init long arrays
+$test["1"] = array
+(
+    "title" => "This is a title",
+    "Descriptions" => "This is desciption",
+    "page callback" => "fun1",
+    
+    // PHP allows to keep the comma even in the last statment
+    // it's easier to extend the array if it necessary
+    "access arguments" => array("access content"), 
+);
+
+//concatenation
+$test .= "Slava" . " the " . $best;
+
+/* start of the comment block */
+// 1. First line of the comment
+// 2. Use the full sentences in comments
+// 3. Use double slash comment in function
+
+/* include files*/
+// For unconditional use require_once
+// for conditional use include_once 
+// use pull path for files
+
+//DRUPAL_ROOT - is the constant that contains root of the drupal site
+require_once DRUPAL_ROOT."/sites"."etc";
+
+/* PHP code */
+// 1.use <?php and not the sort way <?
+// 2. leave closing PHP tag because off empty spases problems....
+// <?php print "test"  - wrong
+// <?php print "$test"; - right
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
