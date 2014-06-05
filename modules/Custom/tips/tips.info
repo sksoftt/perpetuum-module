@@ -1,0 +1,5 @@
+name = "06 Tips and Tricks"
+description = "This module with example of development tips"
+package = "Slava modules"
+core = 7.x
+files[] = tips.module

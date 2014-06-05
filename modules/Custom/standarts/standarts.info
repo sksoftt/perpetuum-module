@@ -1,4 +1,4 @@
-name "Coding standarts"
+name = "05 Coding standarts"
 description = "This module with examples of coding standarst"
 package = "Slava modules"
 core = 7.x

@@ -1,0 +1,82 @@
+<?php
+function tips_menu()
+{
+    
+    return array
+    (
+        "tips" => array
+        (
+            "title" => "Utility functions",
+            "description" => "Examples of common utility functions",
+            "page callback" => "tips_page",
+            "access arguments" => array("access content"),
+        ),
+        
+        "editors" => array
+        (
+          "title" => "Editors",
+          "description" => "Links and details about most solid Drupal editors",
+          "page callback" => "tips_editors_page",
+          "access arguments" => array("access content"),
+        ),
+        
+        "duplicate" => array
+        (
+            "title" => "Duplicate",
+            "description" => "How to not duplicate existing functionality of "
+            . "new created module",
+            "page callback" => "tips_duplicate_page",
+            "access arguments" => array("access content"),
+        )
+    );
+}
+
+function tips_page()
+{
+    $output = "";
+    $output .= "<h2>Examples of URL</h2>";
+    
+    $urls["simple path"] = url("admin/modules");
+    $urls["external_path"] = url("http;//drup");
+    $urls["absolute_local_path"] = url("admin/module", array("absolute" => true));
+    
+    //add paramenter after url
+    $urls["fragment"] = url("admin/module", array("fragment" => "footer"));
+    
+    //
+    $urls["query_string"] = url("admin/modules", array("query" => array("destination" => "admin")));
+    
+    foreach ($urls as $key => $value)
+    {
+        $output .= "<p><strong>".$key."</strong><br>".$value."</p>";
+    }
+    
+    
+    $links["simple path"] = l("Simple path", "admin/modules");
+    $links["external_path"] = l("External path", "http;//drup.com");
+    $links["absolute_local_path"] = l("Absolute path", "admin/module", array("absolute" => true));
+    $links["fragment"] = l("Fragment", "admin/module", array("fragment" => "footer"));
+    $links["query_string"] = l("Query string", "admin/modules", array("query" => array(
+        "destination" => "admin",
+        "random_string" => "<h1>This is random"
+        )));
+   
+    $output .= "<br><h1>Links</h1><br>";
+    
+    $links["attributes"] = l("With attributes", "tips", array
+        (
+            "attributes" => array
+            (
+                "class" => "active",
+                "target" => "_blank",
+                "rel" => "some value",
+            )
+        ));
+    
+        foreach ($links as $key => $value)
+        {
+            $output .= "<p><strong>".$key."</strong><br>".$value."</p>";
+        }
+    
+    return $output;
+}

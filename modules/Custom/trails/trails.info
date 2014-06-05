@@ -1,4 +1,4 @@
-name = "Trails"
+name = "04 Trails"
 description = "This is the trails module - about the hooks"
 package = Slava modules
 core = 7.x
