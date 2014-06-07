@@ -1,0 +1,5 @@
+name = "07 Forms"
+description = "this module with examples fir forms API"
+package = "Slava modules"
+core = 7.x
+files[] = input.module

@@ -67,7 +67,7 @@ function tips_page()
         (
             "attributes" => array
             (
-                "class" => "active",
+                "class" => array ("active"),
                 "target" => "_blank",
                 "rel" => "some value",
             )
@@ -77,6 +77,14 @@ function tips_page()
         {
             $output .= "<p><strong>".$key."</strong><br>".$value."</p>";
         }
+    
+        /*
+         * Variables examples
+         */
+        
+        // end this example as training
+    $var = variable_get("var", 0);
+    
     
     return $output;
 }

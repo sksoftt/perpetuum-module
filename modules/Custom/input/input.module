@@ -1,0 +1,55 @@
+<?php
+
+function input_menu()
+{
+    return array("input/examples" => array
+        (
+            "title" => "Input module menu",
+            "description" => "Input module menu",
+            "page callback" => "drupal_get_form",
+            "page arguments" => array("input_simple_form"),
+            "access arguments" => "content access",
+            "access callback" => true,
+        )
+    );
+}
+
+function input_simple_form($form,&$submit)
+{
+    $form["color"] = array
+    (
+        "#title" => "Form API examples",
+        "#type" => "textfield",
+        "#required" => true,
+        "#description" => t("Type your favorite color."),
+    );
+    
+    $form["submit"] = array
+    (
+        "#type" => "submit",
+        "#value" => "submit",
+    );
+    return $form;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
