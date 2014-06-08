@@ -2,7 +2,8 @@
 
 function input_menu()
 {
-    return array("input/examples" => array
+    $menu = array();
+    $menu["input/examples"] = array
         (
             "title" => "Input module menu",
             "description" => "Input module menu",
@@ -10,18 +11,51 @@ function input_menu()
             "page arguments" => array("input_simple_form"),
             "access arguments" => "content access",
             "access callback" => true,
-        )
+        );
+    
+    //page for embedded form
+    $menu["input/examples/embedded"] = array
+    (
+        "title" => "Simple",
+        "description" => "Simple example using a page callback",
+        "page callback" => "input_embedded_form", //function name
+        "access callback" => true,
     );
+    
+    //form with more elements and examples
+    $menu["input/examples/more"] = array
+    (
+        "title" => "More form examples",
+        "description" => "This is the page with more form examples",
+        "page callback" => "drupal_get_form",
+        "access callback" => true,
+        "page arguments" => array("input_more_examples"),
+        "weight" => 1,
+    );
+    
+    //add path to autocomplete function
+    // in this case - for search block
+    $menu["input/search/auto"] = array
+    (
+        "description" => "Autocomplete",
+        "page callback" => "input_search_autocomplete",
+        "access callback" => true,
+        "type" => MENU_CALLBACK
+    );
+    
+    return $menu;
 }
 
-function input_simple_form($form,&$submit)
+
+//$form - contains entered values of form if page will be reloaded
+function input_simple_form($form, &$submit)
 {
     $form["color"] = array
     (
         "#title" => "Form API examples",
         "#type" => "textfield",
         "#required" => true,
-        "#description" => t("Type your favorite color."),
+        "#description" => t("Type your favorite color exept blue."),
     );
     
     $form["submit"] = array
@@ -32,9 +66,242 @@ function input_simple_form($form,&$submit)
     return $form;
 }
 
+/*
+ * Creating an embedded form
+ */
+
+function input_embedded_form()
+{
+    $build["header_text"] = array
+    (
+        "#type" => "markup",
+        "#markup" => "<p>".t("To add additional content from page, you can use a page callback "
+                . "and return a render array like this")."</p>",
+    );
+    
+    // "$embedded form" - will get form from "input_simple_form()" function
+    $build["embedded form"] = drupal_get_form('input_simple_form');
+    
+    return $build;
+}
+
+/*
+ * Forms validation
+ */
 
 
+// "form_name" + validate - drupal will automaticaly use this function to validate
+// form in "function_name"
+// in this example drupal will automaticaly check "input_simple_form"
+function input_simple_form_validate($form, &$form_sate)
+{
+    // $form_state has values if the form
+    // so checking it's value
+    if ($form_sate["values"]["color"] == "blue")
+    {
+        // first arg - is name of form element. second - is the error message
+        form_set_error("color", "Sorry! this color is not right.");
+    }
+}
 
+// "function that creates a form"_submit - this function will submit specific form
+function input_simple_form_submit($form, &$form_state)
+{
+    drupal_set_message(t("You like @color", array("@color" => $form_state["values"]["color"])));
+    return;
+}
+
+/*
+ * Examples of more from elements
+ */
+
+function input_more_examples($form, &$form_state)
+{
+    $form["computer"] = array
+    (
+        "#title" => "Do you own a computer",
+        "#type" => "radios",
+        "#options" => array
+            (
+                "yes" => t("Yes"),
+                "no" => t("No"),
+            ),  
+        "#required" => true
+    );
+    
+    //incapsulete elements to some one "box"
+    $form["computer_stats"] = array
+    (
+        "#title" => "Computer stats",
+        "#type" => "fieldset",
+        "#collapsible" => true,
+        "#collapsed" => false,
+        
+        
+        "#states" => array
+        (
+            //visible           jquery selector
+            "visible" => array (':input[name="computer"]' => array
+                                        ("value" => "yes"),) //checking value
+        ),
+    );
+    
+    
+    //add a simple textfield
+    $form["computer_stats"]["thickness"] = array
+    (
+        "#title" => t("Thickness"),
+        "#type" => "textfield",
+        "#field_prefix" => t("Approx. "),
+        "#field_suffix" => t("inches"),
+        "#maxlenth" => 3,
+        "#size" => 3
+    );
+    
+    
+    $form["computer_stats"]["heft"] = array
+    (
+        "#title" => t("Heft"),
+        "#type" => "select",
+        "#options" => array
+            (
+                "small" => t("I could throw this thing long away"),
+                "medium" => t("I would rather drop it than throw it"),
+                "heavy" => t("I need help to move it"),
+            ),
+    );
+    
+    $form["help"] = array
+    (
+        "#type" => "markup",
+        "#markup" => "This is the markup element."
+    );
+    
+    
+       /*
+     * added for ajax
+     */
+    
+    $form["computer_stats"]["os"] = array
+    (
+        "#title" => t("Operation system"),
+        "#type" => "select",
+        "#options" => drupal_map_assoc(array("", t("Windows"), t("linux"), t("MacOS"))),
+        
+        //ajax attribute
+        "#ajax" => array
+        (
+            "callback" => "",   //function that returns HTML or render array
+            "wrapper" => "input_as_verify_wrapper" // ID of HTML element that's gonna be replaced.
+        ),
+    );
+    
+    //so create new HTML element for wraper
+    $form["computes_stats"]["os_verify"] = array
+    (
+        "#type" => "markup",
+        "#prefix" => "<div id = 'input_as_verify_wrapper'>",
+        "#suffix" => "</div>",
+    );
+    
+    if ($form_state["values"]["os"] != "")
+    {
+        $form["computer_stats"]["os_verify"]["#type"] = "checkbox";
+        $form["computer_stats"]["os_verify"]["title"] = t(""
+                . "Are you sure you are using @os system",
+                array("@os" => $form_state["values"]["os"]));
+                
+    }
+    
+    return $form;
+}
+
+// this hook can change the form before the render
+function input_form_alter(&$form, &$form_state, $form_id)
+{
+    // for example - add submit button to the "input_more_examples" form
+    
+    switch ($form_id)
+    {
+        case "input_more_examples":
+        {
+            //change element attribute n the form
+            $form["computer"]["#title"] .= " (added in the hook_form_alter)";
+            
+            
+            // add element
+            $form["submit"] = array
+            (
+                "#type" => "submit",
+               "#value" => "Submit"
+            );   
+            
+            //add submit function
+            $form["#submit"][] = "input_sub";
+            break;
+        }
+        
+        //change submit function for search block
+        case "search_block_form":
+        {
+            $form["#submit"][] = "input_save_sesrches";
+            
+            //add field for autocomplete
+            $form["search_block_form"]["#autocomplete_path"] = "input/search/auto";
+        }
+    }
+    return;
+}
+
+function input_more_examples_submit($form, &$form_state)
+{
+    drupal_set_message("the form was 'Submited'");
+    return;
+}
+
+function input_sub()
+{
+    drupal_set_message("Input sub function");
+    return;
+}
+
+
+//saving all searches for autocomplete
+function input_save_sesrches($form, &$form_state)
+{
+    $phrase = $form_state["values"]["search_block_form"];
+    $searches = variable_get("searches", array());
+    $searches[] = $phrase;
+    variable_set("searches", $searches);
+}
+
+/*
+ * Autocomplete for search block
+ */
+
+// 1. first of all - create function that receive string with entered value in a text field
+// 2. add new path to MENU hook with "page callback" to autocomplete function from STEP 1
+// 3. add to necessary form array to necessary element "#autocomplete_path" with path from STEP 2
+// 4. pray very hard, and maybe God will mercy on you, and it gonna work.
+
+function input_search_autocomplete($string = "")
+{
+    $searches = variable_get("searches", array());
+    $auto = array();
+    foreach ($searches as $search)
+    {
+        if (strrpos($search, $string) !== false)
+        {
+            $auto[$search] = $search;
+        }
+    }
+    drupal_json_output($auto);
+    return;
+}
+
+/*
+ * Using #ajax attribute for dynamic form building
+ */
 
 
 
