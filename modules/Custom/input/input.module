@@ -40,7 +40,7 @@ function input_menu()
         "description" => "Autocomplete",
         "page callback" => "input_search_autocomplete",
         "access callback" => true,
-        "type" => MENU_CALLBACK
+        "type" => MENU_CALLBACK //it means that it just reference to function
     );
     
     return $menu;
@@ -126,7 +126,8 @@ function input_more_examples($form, &$form_state)
                 "yes" => t("Yes"),
                 "no" => t("No"),
             ),  
-        "#required" => true
+        "#required" => true,
+        "#default_value" => "yes"
     );
     
     //incapsulete elements to some one "box"
@@ -178,10 +179,11 @@ function input_more_examples($form, &$form_state)
     );
     
     
-       /*
-     * added for ajax
-     */
+       /***********************
+       **** added for ajax ****
+       ************************/
     
+    $os = variable_get("os", null);
     $form["computer_stats"]["os"] = array
     (
         "#title" => t("Operation system"),
@@ -189,28 +191,31 @@ function input_more_examples($form, &$form_state)
         "#options" => drupal_map_assoc(array("", t("Windows"), t("linux"), t("MacOS"))),
         
         //ajax attribute
+        /*
         "#ajax" => array
         (
-            "callback" => "",   //function that returns HTML or render array
+            "callback" => "input_os_verify_ajax",   //function that returns HTML or render array
             "wrapper" => "input_as_verify_wrapper" // ID of HTML element that's gonna be replaced.
         ),
+         */
     );
     
     //so create new HTML element for wraper
-    $form["computes_stats"]["os_verify"] = array
+    $form["computer_stats"]["os_verify"] = array
     (
         "#type" => "markup",
         "#prefix" => "<div id = 'input_as_verify_wrapper'>",
         "#suffix" => "</div>",
     );
     
-    if ($form_state["values"]["os"] != "")
+    //if user chooce, lin, win or mac system - add the checkbox
+    // by overriding ["computer_stats"]["os_verify"] type attribute
+    if (isset($form_state["values"]["os"]) && $form_state["values"]["os"] != "")
     {
         $form["computer_stats"]["os_verify"]["#type"] = "checkbox";
-        $form["computer_stats"]["os_verify"]["title"] = t(""
+        $form["computer_stats"]["os_verify"]["#title"] = t(""
                 . "Are you sure you are using @os system",
                 array("@os" => $form_state["values"]["os"]));
-                
     }
     
     return $form;
@@ -302,6 +307,24 @@ function input_search_autocomplete($string = "")
 /*
  * Using #ajax attribute for dynamic form building
  */
+
+function input_os_verify_ajax($form, $form_state)
+{
+    return $form["computer_stats"]["os_verify"];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,170 @@
+<?php
+
+function input_try_menu()
+{
+    $items["input/try/ff"] = array
+    (
+        "title" => "Form with confirm on submit",
+        "description" => "Form with confirm menu",
+        "page callback" => "drupal_get_form",
+        "page arguments" => array("first_form"),
+        //"page arguments" => array("first_form_inp_confirm"),
+        
+        "access arguments" => array("content access"),
+    );
+    
+    
+    //menu item for autocomplete for first_form["inp"] element
+    $items["input/try/ff//inp/auto"] = array
+    (
+        "page callback" => "first_form_inp_autocomplete",
+        "access callback" => true,
+        "type" => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function first_form($form, &$form_state)
+{   
+    if (!isset($form_state["storage"]["confirm"]))
+    {
+        $form["inp"] = array
+        (
+            "#title" => "Insert a value",
+            "#type" => "textfield",
+         //   "#autocomplete_path" => "input/try/ff//inp/auto",
+        );
+
+        $form["submit"] = array
+        (
+            "#type" => "submit",
+            "#value" => "Press to submit",
+        );
+
+        return $form;
+    }
+    
+    return drupal_get_form("first_form_inp_confirm");
+}
+
+function first_form_inp_autocomplete($form, &$form_state)
+{
+    return;
+}
+
+function input_try_form_alter(&$form, &$form_state, $form_id)
+{
+    $a = 12;
+    switch ($form_id)
+    {
+        case "first_form_inp_confirm":
+        {
+            $form["#submit"][] = "first_form_submit";
+            break;
+        }
+    }
+}
+
+function first_form_submit($form, &$form_state)
+{
+    if (!isset($form_state["storage"]["confirm"]))
+    {
+        $form_state["storage"]["first_form"]["inp"] = $form_state["values"]["inp"];
+        $form_state["storage"]["confirm"] = true;
+        $form_state["rebuild"] = true;
+    }
+    
+}
+
+//function that creates confirm form
+function first_form_inp_confirm($form, &$form_state)
+{
+    $question = "Are you sure you want to submit the form?";
+    $path = "input/try/ff";
+    $description = "If you confirm, your value will be saved";
+    $yes = "Confirm and save";
+    $no = "No, thanks";
+    return confirm_form($form, $question, $path, $description, $yes, $no);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+допустим это твоя функция для формы
+
+function my_module_some_form($form, &$form_state) {
+//TODO
+
+return $form;
+}
+
+это ее сабмит функция 
+
+function my_module_some_form_submit($form, &$form_state) {
+}
+
+это функция для confirm form:
+
+function first_form_inp_confirm($form, &$form_state) {
+    $question = "Are you sure you want to submit the form?";
+    $path = "input/try/ff";
+    $description = "If you confirm, your value will be saved";
+    $yes = "Confirm and save";
+    $no = "No, thanks";
+    return confirm_form($form, $question, $path, $description, $yes, $no);
+}
+исправляем здесь:
+function my_module_some_form($form, &$form_state) {
+  if(!isset($form_state['storage']['confirm'])) {
+// здесь наша форма
+  $form ['some_textarea'] = array(
+   '#type' => 'textarea',
+   '#rows' => 25,
+   '#cols' => 10,
+  );
+
+  $form['submit'] = array(
+   '#type' => 'submit',
+   '#value' => 'Submit',
+  );
+
+  return $form;
+ } 
+ else {
+  $form = first_form_inp_confirm($form, $form_state);
+   return $form;
+ }
+}
+
+
+переделываем сабмит
+
+function my_module_some_form_submit($form, &$form_state) {
+ if(!isset($form_state['storage']['confirm'])) {
+  $form_state['storage']['confirm'] = TRUE;
+  $form_state['rebuild'] = TRUE;
+ } 
+else {
+  //  мы подтвердили сабмит, делаем то что мы хотели.
+ }
+}
+
+*/
+
+
+
+
+
+
+
+

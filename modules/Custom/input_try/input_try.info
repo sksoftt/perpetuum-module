@@ -1,0 +1,5 @@
+name = "07 Forms try"
+description = "Try to make form myself"
+package = "Slava modules"
+core = 7.x
+files[] = input_try.module
