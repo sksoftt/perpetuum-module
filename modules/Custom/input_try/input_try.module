@@ -26,13 +26,13 @@ function input_try_menu()
 
 function first_form($form, &$form_state)
 {   
-    if (!isset($form_state["storage"]["confirm"]))
+    if (!isset($form_state["storage"]["ff"]))
     {
         $form["inp"] = array
         (
             "#title" => "Insert a value",
             "#type" => "textfield",
-         //   "#autocomplete_path" => "input/try/ff//inp/auto",
+           // "#autocomplete_path" => "input/try/ff//inp/auto",
         );
 
         $form["submit"] = array
@@ -44,12 +44,20 @@ function first_form($form, &$form_state)
         return $form;
     }
     
-    return drupal_get_form("first_form_inp_confirm");
+    //return drupal_get_form("first_form_inp_confirm");
+    $form["confirm"] = drupal_get_form("first_form_inp_confirm");
+    $form["confirm"]["val"] = array
+    (
+        "#type" => "markup",
+        "#markup" => "val-val",
+    );
+    return $form["confirm"];
 }
 
 function first_form_inp_autocomplete($form, &$form_state)
 {
-    return;
+    $history = variable_get("history", array());
+    return drupal_json_output($history);
 }
 
 function input_try_form_alter(&$form, &$form_state, $form_id)
@@ -62,18 +70,32 @@ function input_try_form_alter(&$form, &$form_state, $form_id)
             $form["#submit"][] = "first_form_submit";
             break;
         }
+        case "first_form":
+        {
+            $form["inp"]["#autocomplete_path"] = "input/try/ff//inp/auto";
+        }
     }
 }
 
 function first_form_submit($form, &$form_state)
 {
-    if (!isset($form_state["storage"]["confirm"]))
+    if (!isset($form_state["storage"]["ff"]))
     {
-        $form_state["storage"]["first_form"]["inp"] = $form_state["values"]["inp"];
-        $form_state["storage"]["confirm"] = true;
+        $form_state["storage"]["ff"]["inp"] = $form_state["values"]["inp"];
+       // $form_state["storage"]["confirm"] = true;
         $form_state["rebuild"] = true;
+        return;
     }
     
+    //this flag is not a form element, so $form_state doesn't contein it
+    // that's why I added this flag/value to $form array
+    if ($form["val"]["#markup"] == "val-val")
+    {
+        variable_del("history");
+        $inp = variable_get("history", array());
+        $inp[] = $form_state["storage"]["ff"]["inp"];
+        variable_set("history", $inp);
+    }
 }
 
 //function that creates confirm form
