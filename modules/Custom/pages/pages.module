@@ -64,14 +64,32 @@ function pages_menu()
         
         
         /* oass arguments */
+        //in this case - everything that going after "pages/arguments"
+        //becomes an argument for function
+        // pages/arguments/val1/val2 - val1 and val2 - arguments
         "pages/arguments" => array
         (
             "title" => "Pass arguments to a callback function",
             "page callback" => "pages_arguments",
             "access callback" => true,
-            "type" => MENU_CALLBACK
+            "type" => MENU_CALLBACK,
         ),
-         
+        
+        "pages/%/middle/argument" => array
+        (
+            "title" => "Argument in the middle of the path",
+            "page arguments" => array(1), //means 2-nd object in the path (% sing)
+            "page callback" => "pages_middle_argument",
+            "access arguments" => array("access content"),
+        ),
+        
+        "pages/function/for/argument/%prep_arg" => array
+        (
+            "title" => "This argument was prepared by function",
+            "page callback" => "pages_function_for_argument",
+            "access arguments" => array("access content"),
+            "page arguments" => array(4),
+        ),
     );
 }
 
@@ -138,11 +156,36 @@ function pages_arguments($arg)
     
     drupal_set_message("There is no argument");
     return "Hi";
-    
 }
 
+function pages_middle_argument($arg)
+{
+    return array
+    (
+        "#type" => "markup",
+        "#markup" => t("Received value: %arg", array("%arg" => $arg)),
+    );
+}
 
+function prep_arg_load($arg)
+{
+    if (empty($arg))
+        $arg = "nothing";
+    return array
+    (
+        "type" => "markup",
+        "markup" => t("The value that was get: %val", array("%val" => $arg)),
+    );
+}
 
+function pages_function_for_argument($ar)
+{
+    return array
+    (
+        "#type" => $ar["type"],
+        "#markup" => $ar["markup"],
+    );
+}
 
 
 
