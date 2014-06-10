@@ -1,0 +1,174 @@
+<?php
+
+function pages_menu()
+{
+    return array
+    (
+        
+        "pages" => array
+        (
+            "title" => "Menu system examples",
+            "description" => "This menu example returns string",
+            "page callback" => "pages_string",
+            
+            //define a function to check access permissions
+            // if it's tru - everyone can access to this page, eveb an annonymus users
+            "access callback" => true, 
+        ),
+        
+        
+        "pages/default" => array
+        (
+            "title" => "Pages/defualt",
+            
+            // it become default tab of "pages"
+            // it doesn't contains "page callback" key, so tab will take
+            // "page callback" of parent function
+            // parent's content always win child content
+           // "page callback" => "pages_string",
+            "type" => MENU_DEFAULT_LOCAL_TASK,
+            "access callback" => true, 
+            "weight" => -10, 
+        ),
+        
+        "pages/render-array" => array
+        (
+            "title" => "Render array page",
+            "description" => "Example of using render array",
+            "page callback" => 'pages_render_array',
+            "access arguments" => array("access content"),
+            "type" => MENU_LOCAL_TASK,
+            "weight" => 1
+        ),
+        
+        //subtabs
+        
+        "pages/render-array/tab1" => array
+        (
+            "title" => "Tab1",
+            "description" => "This is first subtab",
+            
+            "type" => MENU_DEFAULT_LOCAL_TASK,
+            
+        ),
+        
+        "pages/render-array/tab2" => array
+        (
+            "title" => "Tab2",
+            "description" => "This is first subtab",
+           "page callback" => "pages_render_array",
+            "access arguments" => array("access content"),
+            "type" => MENU_LOCAL_TASK,
+            
+        ),
+        
+        
+        /* oass arguments */
+        "pages/arguments" => array
+        (
+            "title" => "Pass arguments to a callback function",
+            "page callback" => "pages_arguments",
+            "access callback" => true,
+            "type" => MENU_CALLBACK
+        ),
+         
+    );
+}
+
+
+//page callback
+function pages_string()
+{
+    $out = "";
+    $out .= "<p>Pages can return values to page as a string</p>";
+    $out .= "or as <em>render array</em>";
+    $out .= theme("item_list", array
+    (
+        "title" => "Render array is better to use because",
+        "items" => array
+        (
+            "They allow content to be modified as array",
+            "Arrays a lot easier to modify than HTML",
+        ),
+    ));
+    
+    return $out;
+}
+
+function pages_render_array()
+{
+    $render = array();
+    return array
+    (
+        "string" => array
+        (
+            "#type" => "markup",
+            "#markup" => "<p>This is a string from render array</p>",
+        ),
+        
+        "render" => array
+        (
+            "#type" => "markup",
+            "#markup" => "It's better to use <em>render array</em></p>",
+            
+        ),
+        
+        "why_render_array" => array
+        (
+            "#title" => "Render arrays title",
+            "#items" => array
+            (
+                "Easier to modify",
+                "than HTML",
+            ),
+            
+            "#theme" => "item_list",
+        ),
+        
+       
+    ); 
+}
+
+function pages_arguments($arg)
+{
+    if (isset($arg))
+    {
+        return t("The value passed as argument is: @arg", array("@arg" => $arg));
+    }
+    
+    drupal_set_message("There is no argument");
+    return "Hi";
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -43,6 +43,15 @@ function input_menu()
         "type" => MENU_CALLBACK //it means that it just reference to function
     );
     
+    $menu["input/clear/search/history"] = array
+    (
+        "title" => "Delete search history",
+        "page callback" => "drupal_get_form",
+        "page arguments" => array("input_delete_searches_confirm"),
+        "access callback" => true,
+        "type" => MENU_CALLBACK,
+    );
+    
     return $menu;
 }
 
@@ -191,13 +200,13 @@ function input_more_examples($form, &$form_state)
         "#options" => drupal_map_assoc(array("", t("Windows"), t("linux"), t("MacOS"))),
         
         //ajax attribute
-        /*
+        
         "#ajax" => array
         (
             "callback" => "input_os_verify_ajax",   //function that returns HTML or render array
             "wrapper" => "input_as_verify_wrapper" // ID of HTML element that's gonna be replaced.
         ),
-         */
+         
     );
     
     //so create new HTML element for wraper
@@ -208,8 +217,14 @@ function input_more_examples($form, &$form_state)
         "#suffix" => "</div>",
     );
     
+    //$form_state - conteins ["values"] only after form was build
+    //so when form loaded for the first time - it's empty
+    //Ajax function working when form already builded and the value $form_state["values"]["os"] presents
+    //That's why Ajax can retrieve this data and push it to "wrapper".
+    //
     //if user chooce, lin, win or mac system - add the checkbox
     // by overriding ["computer_stats"]["os_verify"] type attribute
+    
     if (isset($form_state["values"]["os"]) && $form_state["values"]["os"] != "")
     {
         $form["computer_stats"]["os_verify"]["#type"] = "checkbox";
@@ -249,10 +264,23 @@ function input_form_alter(&$form, &$form_state, $form_id)
         //change submit function for search block
         case "search_block_form":
         {
-            $form["#submit"][] = "input_save_sesrches";
+               
+            // current path - saving current page before showing confirm delete form
+            // in case user cancel the delete action
+            // site have to return to previous page
+            
+            $path = current_path(); 
+            $form["#submit"][] = "input_save_searches";
             
             //add field for autocomplete
             $form["search_block_form"]["#autocomplete_path"] = "input/search/auto";
+            $form["delete_search"] = array
+            (
+                "#type" => "markup",
+                "#markup" => l("Delete history", "input/clear/search/history",
+                        array("query" => array("ret_path" => $path)))
+            );
+            break;
         }
     }
     return;
@@ -272,7 +300,7 @@ function input_sub()
 
 
 //saving all searches for autocomplete
-function input_save_sesrches($form, &$form_state)
+function input_save_searches($form, &$form_state)
 {
     $phrase = $form_state["values"]["search_block_form"];
     $searches = variable_get("searches", array());
@@ -313,6 +341,32 @@ function input_os_verify_ajax($form, $form_state)
     return $form["computer_stats"]["os_verify"];
 }
 
+/*
+ * Conrifm menu to delete all search history
+ */
+
+function input_delete_searches_confirm($form, &$form_state)
+{
+    $question = "Are you sure you want to delete all search history?";
+    $description = "All searches will be deleted. This action cannot be undone";
+    $yes = "Yes, delete all";
+    $no = "Cancel";
+    $path = ""; //return path if user press cancel
+    $form_state["storage"]["del_search"]["ret_path"] = $path;
+    if (isset($_GET["ret_path"]))
+    {
+        $path = $_GET["ret_path"];
+        $form_state["storage"]["del_search"]["ret_path"] = $path;
+    }
+    return confirm_form($form, $question, $path, $description, $yes, $no);
+}
+
+function input_delete_searches_confirm_submit($form, &$form_state)
+{
+    //variable_del("searches");
+    drupal_goto($form_state["storage"]["del_search"]["ret_path"]);
+    
+}
 
 
 

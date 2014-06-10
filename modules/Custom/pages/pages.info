@@ -1,0 +1,5 @@
+name = "08 Pages"
+description = "This module with examples about manipulation pages with Menu System"
+package = "Slava modules"
+core = 7.x
+files[] = pages.module
