@@ -249,7 +249,7 @@ function pages_page_alter(&$items)
 // hook that gives access to menues of all modules
 function pages_menu_alter(&$items)
 {
-    $a = 
+    
 }
 
 

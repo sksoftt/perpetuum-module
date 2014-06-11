@@ -1,0 +1,122 @@
+<?php
+
+function look_menu()
+{
+    return array
+    (
+        "look/theming/example" => array
+        (
+            "title" => "Theming examples",
+            "description" => "It's comtains simple examples of theming",
+            "page callback" => "look_theming_example",
+            "access arguments" => array("access content"),
+        ),
+    );
+}
+
+function look_theming_example()
+{
+    // simple output string 
+    $output = "<h2>Simple list</h2>";
+    $items_list = array();
+    $items_list[] = "Go to <code> Configuration > Development > Preformance </code>";
+    $items_list[] = "Clear the caches";
+    $items_list[] = "Or just visit <code>admin/config/development/performance</code>";
+    
+    $output .= theme("item_list", array("items" => $items_list));
+    
+    
+    //create an ordered list
+    $output .= "<h2>Simple (ordered) list</h2>";
+    $items_list[] = "Go to <code> Configuration > Development > Preformance </code>";
+    $items_list[] = "Clear the caches";
+    $items_list[] = "Or just visit <code>admin/config/development/performance</code>";
+    
+    $output .= theme("item_list", array
+        (
+            "items" => $items_list,
+            "type" => "ol",
+            "title" => t("How to clear the cache"),
+        ));
+    
+    
+    //creating simple table
+    $output .= "<h2>Create a simple table</h2>";
+    $head = array(t("links"), t("description"));
+    $rows = array();
+    $rows[] = array(l("Google", "google.com"), "this is a google");
+    $rows[] = array(l("Yahoo", "yahoo.com"), "this is a yahoo");
+    $rows[] = array(l("NRG", "nrg.co.il"), "Maariv news");
+    
+    $output .= theme("table", array("header" => $head, "rows" => $rows));
+    
+    
+    //part for implements own theme function
+    $p = array();
+    $p[] = "One";
+    $p[] = "Two";
+    $p[] = "Theree";
+    
+    $output .= "<h2>inplements own theme</h2>";
+    $output .= theme("look_p", $p);
+    return $output;
+}
+
+// implements of own theme function
+function theme_look_p($variables)
+{
+    $str = "";
+    foreach ($variables as $key => $value)
+    {
+        $str .= "<p>".$variables[$key]."</p>";
+    }
+    
+    return $str;
+}
+//that need to register previous theme function in hook_theme 
+function look_theme()
+{
+    return array
+    (
+        "look_p" => array(
+            "variables" => array(),
+        ),
+    );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
