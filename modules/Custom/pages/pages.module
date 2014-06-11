@@ -59,6 +59,7 @@ function pages_menu()
            "page callback" => "pages_render_array",
             "access arguments" => array("access content"),
             "type" => MENU_LOCAL_TASK,
+            "access callback" => true,
             
         ),
         
@@ -78,10 +79,15 @@ function pages_menu()
         "pages/%/middle/argument" => array
         (
             "title" => "Argument in the middle of the path",
+            "description" => "Callback function receving argument through placeholder",
             "page arguments" => array(1), //means 2-nd object in the path (% sing)
             "page callback" => "pages_middle_argument",
             "access arguments" => array("access content"),
         ),
+        
+        
+        //in this case "%prep_arg" - drupal will search "prep_arg_load" function
+        //this function will prepare and return array with arguments to "page callback" function
         
         "pages/function/for/argument/%prep_arg" => array
         (
@@ -89,6 +95,17 @@ function pages_menu()
             "page callback" => "pages_function_for_argument",
             "access arguments" => array("access content"),
             "page arguments" => array(4),
+            "type" => MENU_CALLBACK,
+        ),
+        
+        //dynamic title change
+        "pages/dynamic/title/change/%" => array
+        (
+            "title" => "You don't have to see this.",
+            "page callback" => "pages_dynamic_title_change",
+            "access arguments" => array("access content"),
+            "title callback" => "dynamic_title_change",
+            "title arguments" => array(4),
         ),
     );
 }
@@ -113,9 +130,10 @@ function pages_string()
     return $out;
 }
 
+// menu can receive the render array
+// it's looks like it's the same thing as array that contains form...
 function pages_render_array()
 {
-    $render = array();
     return array
     (
         "string" => array
@@ -167,6 +185,8 @@ function pages_middle_argument($arg)
     );
 }
 
+
+//function will prepare array with arguments
 function prep_arg_load($arg)
 {
     if (empty($arg))
@@ -178,6 +198,17 @@ function prep_arg_load($arg)
     );
 }
 
+
+
+//produce default value. In Udemy example - drupal created ling with defaul value
+// in the path to callback function
+function prep_arg_to_arg($arg)
+{
+    if (empty($arg))
+        return "Default value";
+    return $arg;
+}
+
 function pages_function_for_argument($ar)
 {
     return array
@@ -187,11 +218,39 @@ function pages_function_for_argument($ar)
     );
 }
 
+// this function return simple text for dynamic change of title
+function pages_dynamic_title_change()
+{
+    return "Look at the title!";
+}
+
+function dynamic_title_change($title)
+{
+    return "This is your title: ".$title;
+}
+
+function pages_page_alter(&$items)
+{
+    
+    
+    if (isset($page["content"]["system_main"]["main"]))
+    {
+        $page["content"]["system_main"]["main"]["#markup"] .= "Added with ALTER hook";
+        
+        return $page;
+        
+    }
+    
+    $page["content"]["system_main"]["main"]["#markup"] = "Added with ALTER hook";
+    return $page;
+}
 
 
-
-
-
+// hook that gives access to menues of all modules
+function pages_menu_alter(&$items)
+{
+    $a = 
+}
 
 
 
