@@ -40,7 +40,7 @@ function look_theming_example()
         ));
     
     
-    //creating simple table
+    //creating simple table with theme function
     $output .= "<h2>Create a simple table</h2>";
     $head = array(t("links"), t("description"));
     $rows = array();
@@ -59,31 +59,55 @@ function look_theming_example()
     
     $output .= "<h2>inplements own theme</h2>";
     $output .= theme("look_p", $p);
+    
+    
+    //using a template
+    $variables["strings"] = $p;
+    $output .= theme("look_p_2", $variables);
+    
+    
     return $output;
 }
 
 // implements of own theme function
+// this function receiving elements
+// and wraps every item in <p> element
+// Note: every theming function have to start with "theme_"
 function theme_look_p($variables)
 {
     $str = "";
     foreach ($variables as $key => $value)
     {
-        $str .= "<p>".$variables[$key]."</p>";
+        $str .= "<p style = 'color: white; background-color: green;'>".$variables[$key]."</p>";
     }
-    
     return $str;
 }
-//that need to register previous theme function in hook_theme 
+
+//hook_theme - register every theme function
+// every function that registered becomes to HOOK for theme
 function look_theme()
 {
     return array
     (
-        "look_p" => array(
-            "variables" => array(),
+        "look_p" => array // the key is name of the theme function (this case it will be: "theme_look_p")
+        (
+            "variables" => array(), //default variables that function gets
+        ),
+        
+        // example of using theme templetes
+        "look_p_2" => array
+        (
+            "variables" => array("strings" => array()),
+            "template" => "my_template", // this is the name of the template file (my_template.tpl.php)
         ),
     );
 }
 
+// Implements module_prerocess_HOOK()
+function look_preprocess_item_list(&$variables)
+{
+    return;
+}
 
 
 

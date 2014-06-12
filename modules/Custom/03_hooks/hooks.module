@@ -13,6 +13,8 @@ function hooks_menu()
     return $item;
 }
 
+//continue working with hooks in trails module
+
 
 
 
