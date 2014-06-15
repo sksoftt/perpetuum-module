@@ -9,11 +9,11 @@ $a = 12;
 <br>
 <?php
 
-foreach ($variables["strings"] as  $value)
+foreach ($variables["strings"]["vars"] as  $value)
 { 
-    
+  //<p style="color: #3098f3; background-color: #09a30b">  
 ?>
-<p style="color: #3098f3; background-color: #09a30b">
+<p class="myClass">
     <?php print $value;?>
 </p>
 <?php

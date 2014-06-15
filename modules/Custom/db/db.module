@@ -1,0 +1,106 @@
+<?php
+
+function db_menu()
+{
+    return array
+    (
+        "admin/config/db" => array
+        (
+            "title" => "Config DataBase module",
+            "description" => "",
+            "access arguments" => array("Administer DB module"),
+            
+            "page callback" => "drupal_get_form",
+            "page arguments" => array("db_admin_form"),
+            "file" => "db.admin.inc",
+            "file path" => drupal_get_path("module", "db"),
+            
+        ),
+    );
+}
+
+// hook_permissions
+function db_permission()
+{
+    return array
+    (
+        "DB Administer module" => array
+        (
+            "title" => "Administer DB module",
+            "description" => "Allows to get to administer page",
+        ),
+        
+        "DB show" => array
+        (
+            "title" => "DB show",
+            "description" => "Show saved trails",
+        ),
+    );
+}
+
+function db_block_info()
+{
+ return array 
+ (
+    "db_block_trails" => array
+    (
+        "info" => "DB module block",
+        "cache" => DRUPAL_NO_CACHE,
+    ),
+  ); 
+}
+
+function db_block_configure($delta = "")
+{
+    if (!user_access("DB show"))
+    {
+        return false;
+    }
+    
+    if ($delta == "db_block_trails")
+    {
+        $form = array();
+        $options = array();
+        $stop = variable_get("db_num_of_trails", 10);
+        for ($cnt = 0; $cnt <= $stop; ++$cnt)
+            $options[] = $cnt;
+        
+        $form["db_block_trails_show"] = array
+        (
+            "#title" => "Numbers of saved trails to show",
+            "#type" => "select",
+            "#options" => drupal_map_assoc($options),
+            "#reqired" => true,
+        );
+        return $form;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

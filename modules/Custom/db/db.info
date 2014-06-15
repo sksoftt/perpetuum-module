@@ -1,0 +1,5 @@
+name = "10 DB second edition of trails module"
+description = "This is the second edition of trails module with DB API examples"
+package = "Slava modules"
+core = 7.x
+files[] = db.module

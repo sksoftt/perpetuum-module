@@ -53,15 +53,15 @@ function look_theming_example()
     
     //part for implements own theme function
     $p = array();
-    $p[] = "One";
-    $p[] = "Two";
-    $p[] = "Theree";
+    $p["vars"][] = "One";
+    $p["vars"][] = "Two";
+    $p["vars"][] = "Theree";
     
     $output .= "<h2>inplements own theme</h2>";
     $output .= theme("look_p", $p);
     
     
-    //using a template
+    //using own template (function look_p)
     $variables["strings"] = $p;
     $output .= theme("look_p_2", $variables);
     
@@ -75,11 +75,22 @@ function look_theming_example()
 // Note: every theming function have to start with "theme_"
 function theme_look_p($variables)
 {
+    $d = drupal_get_css();
+    
+    $d = drupal_add_css(drupal_get_path("module", "look"). "/look.css");
+    
+    $d = drupal_get_css();
+   // $d = drupal_add_css("look.css");
+    
+    //$d = drupal_add_css("modules/Custom/look/look.css");
+    
     $str = "";
-    foreach ($variables as $key => $value)
+    foreach ($variables["vars"] as $key => $value)
     {
-        $str .= "<p style = 'color: white; background-color: green;'>".$variables[$key]."</p>";
+        //$str .= "<p style = 'color: white; background-color: green;'>".$variables["vars"][$key]."</p>";
+        $str .= "<p class='myClass'>".$variables["vars"][$key]."</p>";
     }
+    
     return $str;
 }
 
@@ -91,7 +102,7 @@ function look_theme()
     (
         "look_p" => array // the key is name of the theme function (this case it will be: "theme_look_p")
         (
-            "variables" => array(), //default variables that function gets
+            "variables" => array("vars" => array()), //default variables that function gets
         ),
         
         // example of using theme templetes
@@ -103,12 +114,25 @@ function look_theme()
     );
 }
 
-// Implements module_prerocess_HOOK()
+// Implements MODULE_prerocess_HOOK()
 function look_preprocess_item_list(&$variables)
 {
     return;
 }
 
+
+function look_preprocess_look_p(&$var)
+{
+    // preprocessing hook adds "theme hook suggestions" array.
+    // so need to delete it, or ()more perferred use some storege array in $var
+    // $var["variables for function"][0], [1] [2]
+    // and get all neccessary variables from there
+    
+    //drupal_add_css(drupal_get_path("module", "look"). "/look.css");
+   // array_pop($var); //delete "theme hook suggestions"
+    $var["vars"][] = "Added in preprocess HOOK.";
+    
+}
 
 
 
