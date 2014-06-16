@@ -19,6 +19,27 @@ function db_menu()
     );
 }
 
+function db_init()
+{
+    // taking all saved trails if exists
+    $trails = variable_get("db_trails", array());
+    $trails_to_save = variable_get("trails_to_save", 0);
+    
+    
+    //delete all extra trails in array (if the number of max_trails_to_save was reduced)
+    for (; count($trails) >= $trails_to_save ;)
+        array_shift ($trails);
+    
+    $trails[] = array
+    (
+        "title" => strip_tags(drupal_get_title()),
+        "path" => $_GET["q"],
+    );
+            
+    variable_set("dv_saved_trails", $trails);
+    return false;
+}
+
 // hook_permissions
 function db_permission()
 {
@@ -57,17 +78,19 @@ function db_block_configure($delta = "")
         return false;
     }
     
+    
+    //building block configure form
     if ($delta == "db_block_trails")
     {
         $form = array();
         $options = array();
-        $stop = variable_get("db_num_of_trails", 10);
+        $stop = variable_get("db_num_of_trails", 10);//
         for ($cnt = 0; $cnt <= $stop; ++$cnt)
             $options[] = $cnt;
         
         $form["db_block_trails_show"] = array
         (
-            "#title" => "Numbers of saved trails to show",
+            "#title" => "Numbers of saved trails to show (Not working)",
             "#type" => "select",
             "#options" => drupal_map_assoc($options),
             "#reqired" => true,
@@ -76,7 +99,27 @@ function db_block_configure($delta = "")
     }
 }
 
+function db_block_save($delta = "", $edit = array())
+{
+    if ($delta != "db_block_trails")
+        return;
+    
+    $block_max = $edit["db_block_trails_show"];
+    variable_set("db_block_show", $edit["db_block_trails_show"]);
+    return false;
+}
 
+function db_block_view($delta = "")
+{
+    if ($delta != "db_block_trails")
+        return;
+    
+    //get saved trails
+    $trail = variable_get("dv_saved_trails", array());
+    $saves_trails = variable_get("db_trails_to_save", $default);
+    //for ($cnt = 0; $cnt != )
+    
+}
 
 
 
