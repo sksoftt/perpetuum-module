@@ -80,10 +80,9 @@ function theme_look_p($variables)
     $d = drupal_add_css(drupal_get_path("module", "look"). "/look.css");
     
     $d = drupal_get_css();
-   // $d = drupal_add_css("look.css");
     
-    //$d = drupal_add_css("modules/Custom/look/look.css");
     
+    // printing the array $vars? that added in module_preprocess_hook
     $str = "";
     foreach ($variables["vars"] as $key => $value)
     {
