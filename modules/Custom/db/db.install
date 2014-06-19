@@ -1,0 +1,100 @@
+<?php
+
+function db_install()
+{
+        // variable with number of trails to save
+     variable_set("db_trails_to_save", 5);
+    
+    return true;
+}
+
+function db_uninstall() 
+{
+        //delete all variables. DB deletes automaticaly
+    variable_del("db_trails_to_save");
+    variable_del("db_block_trails_show");
+    return true;
+}
+
+
+function db_schema()
+{
+    $a = 1;
+    $schema['db_trails'] = array
+    (
+        'description' => 'Stores the history of each page loaded by user',
+        'fields' => array
+        (
+            'Id' => array
+            (
+                'description' => 'Primary key of each trail!',
+                'type' => 'serial',
+                'not null' => TRUE,
+            ),
+            
+            'time_stamp' => array
+            (
+              'description' => 'Time when the page was loaded',
+              'type' => 'int',
+              'not null' => TRUE,
+            ),
+
+            'path' => array
+            (
+              'description' => 'Path to this page',
+              'type' => 'text',
+              'not null' => TRUE,
+            ),
+
+            'title' => array
+            (
+              'description' => 'Title of this page',
+              'type' => 'text',
+              'not null' => TRUE,
+            ),
+
+            'session_id' => array
+            (
+              'description' => 'Session id of the user that visited the page',
+              'type' => 'int',
+              'not null' => TRUE,
+            ),
+
+            'user_id' => array
+            (
+              'description' => 'Id of user that visited the page',
+              'type' => 'int',
+              'not null' => TRUE,
+            ),
+      ),
+     'primary key' => array('Id'),
+    );
+    
+    return $schema;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

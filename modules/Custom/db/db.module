@@ -1,7 +1,10 @@
 <?php
 
+include_once './sites/all/libraries/custom/hooks/menu.php';
+
 function db_menu()
 {
+    
     return array
     (
         "admin/config/db" => array
@@ -21,10 +24,27 @@ function db_menu()
 
 function db_init()
 {
+    global $user;
     // taking all saved trails if exists
     $trails = variable_get("db_saved_trails", array());
     $trails_to_save = variable_get("db_trails_to_save", 0);
+   
+    // select all trails of this user
+    $res = db_select("db_trails", "t")
+            ->fields("t")
+            ->condition("user_id", $user->uid, "=")
+            ->orderBy("timestamp", "DESC")
+            ->execute();
     
+    foreach ($res as $row)
+        $res_array[] = $row;
+    
+    for ($cnt = 0; $trails_to_save <= count($res_array);)
+    
+    "DELETE FROM db_trail WHERE timestamp = (SELECT max (timestamp) FROM "
+    . "db_trais t WHERE uid = '$user->uid')";
+    
+    $link = $GLOBALS["base_path"];
     
     //delete all extra trails in array (if the number of max_trails_to_save was reduced)
     for (; count($trails) != 0 && count($trails) >= $trails_to_save ;)
