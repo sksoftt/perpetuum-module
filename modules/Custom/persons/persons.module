@@ -1,0 +1,167 @@
+<?php
+
+function persons_menu()
+{
+    return;
+}
+
+/*
+ * implements hook_form_alter
+ */
+function persons_form_alter(&$form, &$form_state, $form_id)
+{
+    global $user;
+    
+    //this is his way to check the form, because there is a differet types of user_form
+    //if ($form["#user_category"] == "account")
+    
+    //if ($form_id == "user_profile_form")
+    if (isset ($form["#user_category"]) && $form["#user_category"] == "account")
+    {
+            //the same data you can get from object global $user
+        $account = $form["#user"];
+        
+        $form["search_history"] = array
+        (
+            "#type" => "fieldset",
+            "#title" => "Search history",
+            "#collapsible" => true,
+            "#collapsed" => false,
+            "#weight" => 4,
+        ); 
+        
+        
+        $form["search_history"]["save_search_history"] = array
+        (
+            "#type" => "checkbox",
+            "#title" => t("Store search history"),
+            "#description" => t("Would you like to save search history and display"
+                    . " a list on your user page"),
+            "#default_value" => isset($account->data["save_search_history"]) ? 
+                                        $account->data["save_search_history"] : 0,
+        );
+    }
+    
+        //we need to add the submit function to save search
+    if ($form_id == "search_block_form")
+    {
+        $form["#submit"][] = "persons_save_search_submit";
+    }
+    return;
+}
+
+
+/*
+ * registration subsubmit function for search_block_form
+ */
+function persons_save_search_submit($form, &$form_submit) 
+{
+    global $user;
+    
+    //if we change global $user by accident it all take a global effect
+    $current_user = $user; //
+
+    if (isset($current_user->data["save_search_history"])
+            && $current_user->data["save_search_history"] != 1)
+    {
+        return;
+    }
+    
+    //recieving search history from GLOBAL $user variable
+    $search_history["data"]["search_history"] = (isset($current_user->data["search_history"])) ? 
+                        $current_user->data["search_history"] : array();
+    
+       // I dont want to save more that 3 searches in history
+        // so if count has more that 3 elements - remove the first elemet (oldest in the history)
+    if (count($search_history["data"]["search_history"]) >= 3)
+        array_shift ($search_history["data"]["search_history"]);
+        
+        //saving a new search
+    $search_history["data"]["search_history"][] = $form_submit["values"]["search_block_form"];
+    
+        //and saving it in the USER object (drupal will save it in it's DB table after that).
+    user_save($current_user, $search_history);
+    return;
+}
+
+/*
+ *  Implenets hook_user_presave
+ */
+
+// this hook runs before saving data to GLOBAL $user
+// this is the second way to make a changes into $user["data"] besides user_save function
+function persons_user_presave(&$edit, $account, $category)
+{
+    if (!isset($edit["save_search_history"]))
+    {
+        return;
+    }
+    
+    $edit["data"]["save_search_history"] = $edit["save_search_history"];
+    
+    if (!$edit["save_search_history"])
+    {
+        /*
+         * can't set values this way from that HOOK
+         * 
+        global $user;
+        $account = $user;
+        $ar["data"]["search_history"][] = "hook";
+        user_save($account, $ar);
+        return;
+         * 
+         */
+        
+            //only this way he can't to delete $user["data"]["search_history"]
+        $edit["data"]["search_history"] = null;
+    }
+}
+
+/*
+ * Implements hook_user_views
+ */
+// User's account information being displayed
+function persons_user_view($account, $view_mode, $langcode)
+{
+    if (is_array($account->data["search_history"]))
+    {
+        foreach ($account->data["search_history"] as $value)
+        {
+            
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -33,16 +33,15 @@ function db_init()
     $res = db_select("db_trails", "t")
             ->fields("t")
             ->condition("user_id", $user->uid, "=")
-            ->orderBy("timestamp", "DESC")
+            ->orderBy("time_stamp", "DESC")
             ->execute();
-    
+    $res_array = array();
     foreach ($res as $row)
         $res_array[] = $row;
     
-    for ($cnt = 0; $trails_to_save <= count($res_array);)
+    for ($cnt = 0; $trails_to_save <= count($res_array); ++$cnt)
     
-    "DELETE FROM db_trail WHERE timestamp = (SELECT max (timestamp) FROM "
-    . "db_trais t WHERE uid = '$user->uid')";
+    
     
     $link = $GLOBALS["base_path"];
     

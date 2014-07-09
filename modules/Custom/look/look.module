@@ -1,169 +1,152 @@
 <?php
 
+/*
+ * This module for Theming lessons
+ */
+
+
+/*
+ * implements hook_menu
+ */
+
 function look_menu()
 {
     return array
-    (
-        "look/theming/example" => array
         (
-            "title" => "Theming examples",
-            "description" => "It's comtains simple examples of theming",
-            "page callback" => "look_theming_example",
+        "theming-examples" => array
+            (
+            "title"            => "Theming examples",
+            "description"      => "This page for implement of theme functions",
+            "page callback"    => "look_example_page",
             "access arguments" => array("access content"),
         ),
     );
 }
 
-function look_theming_example()
+//this function will create list <li> by using theme function
+function look_example_page()
 {
-    // simple output string 
+    // Lesson 73 - in lesson 78 every list becomes to ordered list
+    $li   = array();
+    $li[] = "First li";
+    $li[] = "Second li";
+    $li[] = "Third li";
+    $li[] = "Clear cashes";
+
     $output = "<h2>Simple list</h2>";
-    $items_list = array();
-    $items_list[] = "Go to <code> Configuration > Development > Preformance </code>";
-    $items_list[] = "Clear the caches";
-    $items_list[] = "Or just visit <code>admin/config/development/performance</code>";
-    
-    $output .= theme("item_list", array("items" => $items_list));
-    
-    
-    //create an ordered list
-    $output .= "<h2>Simple (ordered) list</h2>";
-    $items_list[] = "Go to <code> Configuration > Development > Preformance </code>";
-    $items_list[] = "Clear the caches";
-    $items_list[] = "Or just visit <code>admin/config/development/performance</code>";
-    
-    $output .= theme("item_list", array
+
+    //theme() receive hook name and parameter.
+    // then return string result
+    $output .= theme("item_list", array("items" => $li));
+
+
+    //a little bit more complex example
+    $output .= "<h3>This is a little more complex example</h3>";
+    $output .= "<h3>Represents ordered list</h3>";
+
+    $ol    = array();
+    $ol[]  = "First ordered";
+    $ol[]  = "Second ordered";
+    $ol [] = "Third ordered";
+
+    $output .= theme("item_list", array("items" => $ol,
+        "type"  => "ol",
+        "title" => t("This title generated from theme function")));
+
+
+    // lesson 75 - creating table with theme function
+    $output .= "<h2>Table example</h2>";
+    $headers   = array(); // creating headers of the table
+    $headers[] = t("link");
+    $headers[] = t("Description");
+
+    //create rows of the table
+    $row   = array();
+    $row[] = array
         (
-            "items" => $items_list,
-            "type" => "ol",
-            "title" => t("How to clear the cache"),
-        ));
-    
-    
-    //creating simple table with theme function
-    $output .= "<h2>Create a simple table</h2>";
-    $head = array(t("links"), t("description"));
-    $rows = array();
-    $rows[] = array(l("Google", "google.com"), "this is a google");
-    $rows[] = array(l("Yahoo", "yahoo.com"), "this is a yahoo");
-    $rows[] = array(l("NRG", "nrg.co.il"), "Maariv news");
-    
-    $output .= theme("table", array("header" => $head, "rows" => $rows));
-    
-    
-    //part for implements own theme function
-    $p = array();
-    $p["vars"][] = "One";
-    $p["vars"][] = "Two";
-    $p["vars"][] = "Theree";
-    
-    $output .= "<h2>inplements own theme</h2>";
-    $output .= theme("look_p", $p);
-    
-    
-    //using own template (function look_p)
-    $variables["strings"] = $p;
-    $output .= theme("look_p_2", $variables);
-    
-    
+        l("google", "google.com"),
+        "Link to google site"
+    );
+
+    $row[] = array
+        (
+        l("Gmail", "gmail.com"),
+        "Link to google mail"
+    );
+
+    $output .= theme("table", array("header" => $headers, "rows" => $row));
+
+
+    //for lesson 76 - uxsing selfmade function
+    //$output .= theme("look_new_func", array("string" => "This is the value"));
+    $output .= theme("look_new_func", array("string" => "This is the value"));
+
+    // Lesson 77
+    $output .= theme("look_template", array("string" => "This is Slava"));
     return $output;
 }
 
-// implements of own theme function
-// this function receiving elements
-// and wraps every item in <p> element
-// Note: every theming function have to start with "theme_"
-function theme_look_p($variables)
+/*
+ * Lesson 76
+ * implements theme function
+ */
+
+// implements new thee function
+function theme_look_new_func($vars = array())
 {
-    $d = drupal_get_css();
-    
-    $d = drupal_add_css(drupal_get_path("module", "look"). "/look.css");
-    
-    $d = drupal_get_css();
-    
-    
-    // printing the array $vars? that added in module_preprocess_hook
-    $str = "";
-    foreach ($variables["vars"] as $key => $value)
-    {
-        //$str .= "<p style = 'color: white; background-color: green;'>".$variables["vars"][$key]."</p>";
-        $str .= "<p class='myClass'>".$variables["vars"][$key]."</p>";
-    }
-    
-    return $str;
+    drupal_add_css(drupal_get_path("module", "look")."/css/1.css");
+    $output = "";
+    if (isset($vars["string"]))
+        $output .= "<span style='background-color: #A5F5A8;'>" . $vars["string"] . "</span>";
+    return $output;
 }
 
-//hook_theme - register every theme function
-// every function that registered becomes to HOOK for theme
+//then implements hook_theme
+// it will register theme function
 function look_theme()
 {
     return array
-    (
-        "look_p" => array // the key is name of the theme function (this case it will be: "theme_look_p")
         (
-            "variables" => array("vars" => array()), //default variables that function gets
+        //theme function name
+        "look_new_func" => array
+            (
+            //variables default values
+            "variables" => array("string" => "Default value"),
         ),
-        
-        // example of using theme templetes
-        "look_p_2" => array
-        (
-            "variables" => array("strings" => array()),
-            "template" => "my_template", // this is the name of the template file (my_template.tpl.php)
+        // lesson 77
+        // create the template file
+        "look_template" => array
+            (
+            "variables" => array("string" => array()),
+            "template"  => "templates/look_temp",
         ),
     );
 }
 
-// Implements MODULE_prerocess_HOOK()
+// Lesson 78 - preprocess functions
+
+/*
+ * Implements MODULE_preprocess_HOOk
+ */
+// before theme shows values
 function look_preprocess_item_list(&$variables)
 {
+    $variables["type"] = "ol"; //every list becomes to ordered list
+
+    foreach ($variables["items"] as $key => $val)
+    {
+        $variables["items"][$key] = str_replace("Clear cashes", l("Clear cashes", "admin/config/development/performance"), $val);
+    }
     return;
 }
 
+/*
+ * implements hppk_theme_registry_alter()
+ */
 
-function look_preprocess_look_p(&$var)
+//can reset function that will work on some hook
+// "item_list" for example and change it's display time
+function look_theme_registry_alter(&$theme_registry)
 {
-    // preprocessing hook adds "theme hook suggestions" array.
-    // so need to delete it, or ()more perferred use some storege array in $var
-    // $var["variables for function"][0], [1] [2]
-    // and get all neccessary variables from there
-    
-    //drupal_add_css(drupal_get_path("module", "look"). "/look.css");
-   // array_pop($var); //delete "theme hook suggestions"
-    $var["vars"][] = "Added in preprocess HOOK.";
-    
+    return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

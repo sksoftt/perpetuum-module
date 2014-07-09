@@ -1,0 +1,5 @@
+name = "12 Stuff - module about notes"
+description = "This module the Nodes API examples."
+package = "Slava modules"
+core = 7.x
+files[] = stuff.module

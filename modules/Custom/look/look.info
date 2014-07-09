@@ -1,5 +1,5 @@
-name = "09 Theme look module"
-description = "This lesson about how manipulate themes"
+name = "09 Look module for theming lesson"
+description = "Lecture of how to use the theme function"
 package = "Slava modules"
 core = 7.x
 files[] = look.module

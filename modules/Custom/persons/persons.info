@@ -1,0 +1,5 @@
+name = "11 Persons module"
+description = "This module with explanation - how to work with user in Drupal"
+package = "Slava modules"
+core = 7.x
+files[] = persons.module
